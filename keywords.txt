@@ -1,0 +1,31 @@
+#######################################
+# Syntax Coloring Map MyName
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+AsyncSonar	KEYWORD1
+AsyncSonarStatus	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+Start	KEYWORD2
+Start	KEYWORD2
+Stop	KEYWORD2
+Update	KEYWORD2
+Update	KEYWORD2
+GetRawMM	KEYWORD2
+GetRawUS	KEYWORD2
+GetMeasureMM	KEYWORD2
+GetMeasureUS	KEYWORD2
+GetFilteredUS	KEYWORD2
+GetFilteredMM	KEYWORD2
+SetTemperatureCorrection	KEYWORD2
+SetMaxDistance	KEYWORD2
+SetTimeOut	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
