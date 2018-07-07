@@ -24,7 +24,7 @@ void TimeOut(AsyncSonar& sonar)
 
 AsyncSonar sonarA0(A0, PingRecieved, TimeOut);
 
-// ---- In this demo, this code similate other project tasks
+// ---- In this demo, this code simulates other project tasks
 unsigned long interval = 1000;
 unsigned long previousMillis;
 
@@ -59,7 +59,6 @@ void loop()
   sonarA0.Update(&sonarA0);
 
   OtherTasks();
-  delay(10);
 }
 
 
