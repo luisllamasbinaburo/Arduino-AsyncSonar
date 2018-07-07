@@ -12,48 +12,54 @@ Unless required by applicable law or agreed to in writing, software distributed 
 // ping complete callback
 void PingRecieved(AsyncSonar& sonar)
 {
-	Serial.print("Ping: ");
-	Serial.println(sonar.GetMeasureMM());
+  Serial.print("Ping: ");
+  Serial.println(sonar.GetMeasureMM());
 }
 
 // timeout callback
 void TimeOut(AsyncSonar& sonar)
 {
-	Serial.println("TimeOut");
+  Serial.println("TimeOut");
 }
 
 AsyncSonar sonarA0(A0, PingRecieved, TimeOut);
 
-// aditional debug for showing TIME each 1000ms
+// ---- In this demo, this code similate other project tasks
 unsigned long interval = 1000;
 unsigned long previousMillis;
 
 void debug(char* text)
 {
-	Serial.print(text);
-	Serial.println(millis());
+  Serial.print(text);
+  Serial.println(millis());
 }
+
+// show the asynchronous behavior by printing TIME each 1000ms
+void OtherTasks()
+{
+  if (static_cast<unsigned long>(millis() - previousMillis) >= interval)
+  {
+    debug("  TIME: ");
+    previousMillis = millis();
+  }
+}
+// ---- End other tasks
 
 void setup()
 {
-	Serial.begin(115200);
+  Serial.begin(115200);
 
-	sonarA0.SetTemperatureCorrection(28);  // optional
-	sonarA0.Start(500); // start in 500ms
+  sonarA0.SetTemperatureCorrection(28);  // optional
+  sonarA0.Start(500); // start in 500ms
 }
 
 void loop()
 {
-	// this is where magic begins
-	sonarA0.Update(&sonarA0);
+  // this is where magic begins
+  sonarA0.Update(&sonarA0);
 
-	// show the asynchronous behavior by printing TIME each 1000ms
-	if (static_cast<unsigned long>(millis() - previousMillis) >= interval)
-	{
-		debug("  TIME: ");
-		previousMillis = millis();
-	}
-	delay(100);
+  OtherTasks();
+  delay(10);
 }
 
 
