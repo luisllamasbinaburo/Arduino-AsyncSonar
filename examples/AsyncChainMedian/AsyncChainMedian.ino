@@ -30,6 +30,4 @@ void loop()
 {
 	// this is where magic begins
 	sonarA0.Update(&sonarA0);
-
-	delay(100);
 }
