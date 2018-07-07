@@ -21,7 +21,7 @@ AsyncSonar sonarA1(A1, PingRecieved, TimeOut1);
 void PingRecieved(AsyncSonar& sonar)
 {
 	Serial.print("Ping");
-	Serial.print(&sonar == &sonarA1);
+	Serial.print(&sonar == &sonarA1);  // print '0' if sonar A0, '1' if sonar A1
 	Serial.print(": ");
 	Serial.println(sonar.GetMeasureMM());
 }
