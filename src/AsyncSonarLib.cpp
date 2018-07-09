@@ -144,20 +144,25 @@ unsigned int AsyncSonar::GetMeasureMM() const
 	return GetMeasureUS() * 100 / _soundSpeedFactor;
 }
 
+
 void AsyncSonar::SetTemperatureCorrection(int8_t tempCelsius)
 {
 	_soundSpeedFactor = 2000000 / (3310 + 6 * tempCelsius);
 }
 
-void AsyncSonar::SetMaxDistance(unsigned int distanceMM)
+void AsyncSonar::SetTimeOutDistance(unsigned int distanceMM)
 {
 	_timeoutInterval = distanceMM * 2 * _soundSpeedFactor / 100000;
 }
 
-
 void AsyncSonar::SetTimeOut(unsigned int timeOutMillis)
 {
 	_timeoutInterval = timeOutMillis;
+}
+
+void AsyncSonar::SetTriggerInterval(unsigned int intervalMillis)
+{
+	_triggerInterval = intervalMillis;
 }
 
 #ifndef ASYNCSONAR_DISABLE_MEDIAN

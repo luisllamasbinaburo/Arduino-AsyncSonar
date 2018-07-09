@@ -71,8 +71,9 @@ public:
 #endif
 
 	void SetTemperatureCorrection(int8_t tempCelsius);
-	void SetMaxDistance(unsigned int distanceMM);
+	void SetTimeOutDistance(unsigned int distanceMM);
 	void SetTimeOut(unsigned int timeOutMillis);
+	void SetTriggerInterval(unsigned int timeOutMillis);
 
 private:
 	void ping();
