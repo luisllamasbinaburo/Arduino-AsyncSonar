@@ -7,10 +7,10 @@ Por otro lado, incorpora funciones para corrección de la velocidad del sonido c
 
 Los objetos AsyncSonar se pueden encadenar, de forma que varios sensores de ultrasonidos se disparen secuencialmente cuando acabe el ping anterior, sin requerir intervención del usuario.
 
-Más información https://www.luisllamas.es/libreria-arduino-asysncsonar/
+Más información https://www.luisllamas.es/libreria-arduino-asyncsonar/
 
 ## Requisitos
-La librería AsyncSonar emplea la librería YetAnotherPcInt desarrollada por Paulo Costa, disponible en Github https://github.com/paulo-raca/YetAnotherArduinoPcIntLibrary/blob/master/src/YetAnotherPcInt.cpp y en el gestor de librerías de Arduino. Esta librería facilita el uso de las interrupciones Pin Change.
+La librería AsyncSonar emplea la librería YetAnotherPcInt desarrollada por Paulo Costa, disponible en Github https://github.com/paulo-raca/YetAnotherArduinoPcIntLibrary/ y en el gestor de librerías de Arduino. Esta librería facilita el uso de las interrupciones Pin Change.
 
 ## Instrucciones de uso
 El objeto AsyncSonar representa un sensor de ultrasonidos que realiza las acciones de la medición de forma asíncrona. Con objeto de que la librería sea lo menos intrusiva posible no se emplean Timers. En su lugar, se usa la filosofía de emplear un método `Update()`, que actualiza el estado del objeto.
@@ -87,8 +87,8 @@ void SetTriggerInterval(unsigned int timeOutMillis);
 
 Adicionalemnte, se tiene los siguientes métodos si se tiene comentado `#define ASYNCSONAR_DISABLE_MEDIAN` en el fichero `config.h`.
 ```c++
-unsigned long GetFilteredUS() const;
-unsigned int GetFilteredMM() const;
+unsigned long GetFilteredUS();
+unsigned int GetFilteredMM();
 ```
 
 
@@ -278,7 +278,7 @@ void loop()
 }
 ```
 
-* AsyncChainMedian: Muestra el uso asíncrono utilizando el filtro de mediana.
+* AsyncChainMedian: Muestra el uso asíncrono utilizando el filtro de mediana
 ```c++
 #include "AsyncSonarLib.h"
 
@@ -306,7 +306,7 @@ void loop()
 }
 ```
 
-* AsyncChainMultiple: Muestra la medición contínua asíncrona con múltiples sensores.
+* AsyncChainMultiple: Muestra la medición contínua asíncrona con múltiples sensores
 ```c++
 #include "AsyncSonarLib.h"
 
@@ -356,7 +356,7 @@ void loop()
 }
 ```
 
-* AsyncISR: Muestra el uso con ejecución de la callback en la ISR.
+* AsyncISR: Muestra el uso con ejecución de la callback en la ISR
 ```c++
 // Uncomment ASYNCSONAR_USE_SONAR ISR in config.harderr
 #include "AsyncSonarLib.h"
