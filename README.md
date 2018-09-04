@@ -1,4 +1,4 @@
-# Librería Arduino LibName
+# Librería Arduino AsyncSonar
 La librería AsyncSonar permite controlar un sensor de ultrasonidos como el HC-SR04 de forma "asíncrona" (no bloqueante), es decir, permite que el bucle principal realice acciones adicionales mientras está esperando que se reciba el Echo.
 
 Adicionalmente la librería AsyncSonar permite utilizar el sensor empleando un único pin para Trigger y Echo. Las mediciones se pueden obtener tanto en microsegundos como en milímetros. También se puede definir un periodo o distancia de Timeout.
@@ -58,7 +58,7 @@ AsyncSonar(uint8_t trigger_pin,
 					   void (*isr)(AsyncSonar&) = nullptr)	
 ```
 
-### Uso de LibName
+### Uso de AsyncSonar
 La clase AsyncSonar dispone de los siguientes métodos
 ```c++
 
@@ -188,11 +188,24 @@ void loop()
 }
 ```
 
-* AsyncContinuous: Muestra el uso asíncrono (con reactivación manual).
+* AsyncContinuous: Muestra el uso asíncrono continuo con reactivacion en el callback
 ```c++
 #include "AsyncSonarLib.h"
 
-AsyncSonar sonarA0(A0, [](AsyncSonar& sonar) { Serial.println(sonar.GetMeasureMM()) });
+AsyncSonar sonarA0(A0, [](AsyncSonar& sonar) { Serial.println(sonar.GetMeasureMM()); Sonar.Start();});
+
+void setup()
+{
+	Serial.begin(115200);
+
+	sonarA0.Start(1500);	// start in 1500ms
+}
+
+void loop()
+{
+	// this is where magic begins
+	sonarA0.Update();
+}
 
 void setup()
 {
