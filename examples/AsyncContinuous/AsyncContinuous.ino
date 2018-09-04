@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  
 #include "AsyncSonarLib.h"
 
-AsyncSonar sonarA0(A0, [](AsyncSonar& sonar) { Serial.println(sonar.GetMeasureMM()) });
+AsyncSonar sonarA0(A0, [](AsyncSonar& sonar) { Serial.println(sonar.GetMeasureMM()); Sonar.Start();});
 
 void setup()
 {
