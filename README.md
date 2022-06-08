@@ -1,107 +1,115 @@
-# Librería Arduino AsyncSonar
-La librería AsyncSonar permite controlar un sensor de ultrasonidos como el HC-SR04 de forma "asíncrona" (no bloqueante), es decir, permite que el bucle principal realice acciones adicionales mientras está esperando que se reciba el Echo.
+# Arduino AsyncSonar Library
 
-Adicionalmente la librería AsyncSonar permite utilizar el sensor empleando un único pin para Trigger y Echo. Las mediciones se pueden obtener tanto en microsegundos como en milímetros. También se puede definir un periodo o distancia de Timeout.
+The AsyncSonar library allows to control an ultrasonic sensor such as the HC-SR04 in an "asynchronous" (non-blocking) way, i.e. it allows the main loop to perform additional actions while waiting for the Echo to be received.
 
-Por otro lado, incorpora funciones para corrección de la velocidad del sonido con la temperatura y un filtro de mediana extremadamente rápido con un tamaño de ventana de 5 elementos.
+Additionally the AsyncSonar library allows the sensor to be used using a single pin for Trigger and Echo. Measurements can be obtained in both microseconds and millimeters. A timeout period or distance can also be defined.
 
-Los objetos AsyncSonar se pueden encadenar, de forma que varios sensores de ultrasonidos se disparen secuencialmente cuando acabe el ping anterior, sin requerir intervención del usuario.
+On the other hand, it incorporates functions for sound velocity correction with temperature and an extremely fast median filter with a window size of 5 elements.
 
-Más información https://www.luisllamas.es/libreria-arduino-asyncsonar/
+AsyncSonar objects can be chained, so that several ultrasound sensors are triggered sequentially when the previous ping is finished, without requiring user intervention.
+
+More information https://www.luisllamas.es/libreria-arduino-asyncsonar/
 
 ## Requisitos
-La librería AsyncSonar emplea la librería YetAnotherPcInt desarrollada por Paulo Costa, disponible en Github https://github.com/paulo-raca/YetAnotherArduinoPcIntLibrary/ y en el gestor de librerías de Arduino. Esta librería facilita el uso de las interrupciones Pin Change.
 
-## Instrucciones de uso
-El objeto AsyncSonar representa un sensor de ultrasonidos que realiza las acciones de la medición de forma asíncrona. Con objeto de que la librería sea lo menos intrusiva posible no se emplean Timers. En su lugar, se usa la filosofía de emplear un método `Update()`, que actualiza el estado del objeto.
+The AsyncSonar library uses the YetAnotherPcInt library developed by Paulo Costa, available on Github https://github.com/paulo-raca/YetAnotherArduinoPcIntLibrary/ and in the Arduino library manager. This library facilitates the use of Pin Change interrupts.
 
-Para realizar las acciones, AsyncSonar permite definir una función de callback, que se lanzará en `Update()` cuando se haya obtenido una medición válida. Adicionalmente, se puede emplear una función de callback en caso de que ocurra un Timeout.
+## Instructions
 
-El sensor se activa con el método `Start()` al que, opcionalmente, podemos pasar un valor de espera en milisegundos (por ejemplo, para la inicialización del sketch). Podemos dentener el proceso con el método `Stop()`
+The AsyncSonar object represents an ultrasonic sensor that performs the measurement actions asynchronously. In order to make the library as unobtrusive as possible, no timers are used. Instead, the philosophy of using an `Update()` method, which updates the state of the object, is used.
 
-Cuando el sensor se activa, realiza el Ping en el pin del sensor. Una vez enviado el ping se cambia el estado del pin para recibir el Echo. Por tanto, únicamente es necesario un pin digital para controlar el sensor.
+To perform the actions, AsyncSonar allows defining a callback function, which will be triggered in `Update()` when a valid measurement has been obtained. Additionally, a callback function can be used in case of a timeout.
 
-Para la espera del Echo AsyncSonar define una interrupción en el pin mediante la librería YetAnotherPcInt. Cuando el Echo es recibido, AsyncSonar almacena el tiempo entre Ping y el Echo, pero no realiza ninguna acción.
+The sensor is triggered with the `Start()` method to which we can optionally pass a wait value in milliseconds (e.g. for sketch initialization). We can stop the process with the `Stop()` method.
 
-Para actualizar el estado de AsyncSonar es necesario llamar a la función `Update()`, que comprueba el estado de AsyncSonar. Si se ha recibido el echo, realiza las funciones de callback oportunas. Es necesario llamar a la función `Update()` con frecuencia desde el bucle principal.
+When the sensor is activated, it pings the sensor pin. Once the ping is sent, the state of the pin is changed to receive the Echo. Therefore, only one digital pin is needed to control the sensor.
 
-Las funciones de callback reciben como parámetro el propio objeto AsyncSonar por lo que, dentro de la función, podemos emplear las funciones del AsyncSonar que ha invocado el método.
+To wait for the Echo AsyncSonar defines an interrupt on the pin using the YetAnotherPcInt library. When the Echo is received, AsyncSonar stores the time between Ping and Echo, but does not perform any action.
 
-El resultado de la medición se obtiene con las funciones `GetRawMM()`, `GetRawUS()`, `GetMeasureMM()`, `GetMeasureUS()`. Las funciones RAW proporcionan el valor obtenido en la medición, mientras que las funciones Measure filtran las mediciones que obtienen mediciones negativas y timeouts.
+To update the state of AsyncSonar it is necessary to call the `Update()` function, which checks the state of AsyncSonar. If echo has been received, it performs the appropriate callback functions. It is necessary to call the `Update()` function frequently from the main loop.
 
-También se incorpora un filtro de mediana rápido de 5 elementos. Para obtener los valores filtrados con la mediana se emplean las funciones `GetFilteredMM()` y `GetFilteredUS()`. El filtro de mediana también ignora las mediciones negativas y timeouts.
+The callback functions receive as parameter the AsyncSonar object itself so that, within the function, we can use the functions of the AsyncSonar that invoked the method.
 
-Las función `Update()` admite como parámetro opcional un objeto AsyncSonar, que puede ser el mismo objeto que la invoca u otro distinto. Tras recibir el echo, se activará el AsyncSonar pasado como parámetro. Esto facilita realizar mediciones continuas, o lecturas multisensor de forma secuencial.
+The measurement result is obtained with the `GetRawMM()`, `GetRawUS()`, `GetMeasureMM()`, `GetMeasureUS()` functions. The RAW functions provide the value obtained in the measurement, while the Measure functions filter out measurements that get negative measurements and timeouts.
 
-Para la configuración del AsyncSonar se disponen funciones para establecer el timeout y el intervalo entre disparos triggerInterval. Para mejorar la precisión del sensor se dispone de la función para establecer la temperatura y corregir la velocidad del sonido.
+A fast 5-element median filter is also incorporated. The `GetFilteredMM()` and `GetFilteredUS()` functions are used to obtain the median filtered values. The median filter also ignores negative measurements and timeouts.
 
-Adicionalmente se dispone del fichero `config.h`, que contiene opciones adicionales de la librería.
+The `Update()` function accepts as an optional parameter an AsyncSonar object, which can be the same object that invokes it or a different one. After receiving the echo, the AsyncSonar passed as parameter will be activated. This facilitates continuous measurements, or sequential multi-sensor readings.
 
-Así, se puede desactivar el filtro de mediana descomentando `#define ASYNCSONAR_DISABLE_MEDIAN`, lo que hace más rápida la librería.
-Por otro lado, se puede hacer que la función de callback se llame dentro del ISR de la interrupción, en lugar de en el próximo Update(), a costa de ralentizar la ISR. Para ello, descomentar la línea #define `ASYNCSONAR_USE_SONARISR`. 
+For the configuration of the AsyncSonar, functions for setting the timeout and triggerInterval are available. To improve the accuracy of the sensor, a function for setting the temperature and correcting the sound velocity is available.
 
+In addition, the `config.h` file, which contains additional library options, is available.
+
+Thus, you can disable the median filter by setting `#define ASYNCSONAR_DISABLE_MEDIAN`, which makes the library faster.
+On the other hand, you can have the callback function called inside the ISR of the interrupt, instead of in the next Update(), at the cost of slowing down the ISR. To do this, uncomment the line #define `ASYNCSONAR_USE_SONARISR`.
 
 ### Constructor
-La clase AsyncSonar se instancia a través de su constructor.
+
+The AsyncSonar class is instantiated through its constructor.
+
 ```c++
 AsyncSonar(uint8_t trigger_pin,
 	void(*on_ping)(AsyncSonar&) = nullptr,
 	void(*on_time_out)(AsyncSonar&) = nullptr)
 ```
 
-Si tenemos descomentado `#define ASYNCSONAR_USE_SONARISR` en el fichero `config.h` el constructor será el siguiente.
-	
+If we have uncommented `#define ASYNCSONAR_USE_SONARISR` in the `config.h` file the constructor will be the following.
+
 ```c++
 AsyncSonar(uint8_t trigger_pin,
 					   void (*on_ping)(AsyncSonar&) = nullptr,
 					   void (*on_time_out)(AsyncSonar&) = nullptr,
-					   void (*isr)(AsyncSonar&) = nullptr)	
+					   void (*isr)(AsyncSonar&) = nullptr)
 ```
 
-### Uso de AsyncSonar
-La clase AsyncSonar dispone de los siguientes métodos
+### Using AsyncSonar
+
+The AsyncSonar class has the following methods:
+
 ```c++
 
-//Iniciar y detener
+// Start and stop
 void Start();
 void Start(unsigned long);
 void Stop();
 
-//Actualizar el estado
+// Update status
 void Update();
 void Update(AsyncSonar*);
 
-//Obtener medicion
+// Get measurements
 unsigned int GetRawMM();
 unsigned long GetRawUS();
 unsigned int GetMeasureMM();
 unsigned long GetMeasureUS();
 
-//Configuracion	
+// Configuration
 void SetTemperatureCorrection(int8_t tempCelsius);
 void SetTimeOutDistance(unsigned int distanceMM);
 void SetTimeOut(unsigned int timeOutMillis);
 void SetTriggerInterval(unsigned int timeOutMillis);
-	
+
 ```
 
-Adicionalemnte, se tiene los siguientes métodos si se tiene comentado `#define ASYNCSONAR_DISABLE_MEDIAN` en el fichero `config.h`.
+Additionally, you have the following methods if you have commented `#define ASYNCSONAR_DISABLE_MEDIAN` in the `config.h` file.
+
 ```c++
 unsigned long GetFilteredUS();
 unsigned int GetFilteredMM();
 ```
 
+## Examples
 
-## Ejemplos
-La librería AsyncSonar incluye los siguientes ejemplos para ilustrar su uso.
+The AsyncSonar library includes the following examples to illustrate its use.
 
-* SyncSimple: Muestra el uso bloqueante.
+### SyncSimple: Shows blocking usage
+
 ```c++
 #include "AsyncSonarLib.h"
 
 AsyncSonar sonarA0(A0);
 
-void setup() 
+void setup()
 {
 	Serial.begin(115200);
 	sonarA0.SetTemperatureCorrection(28);  // optional
@@ -112,7 +120,7 @@ void loop()
 	sonarA0.Start();  // start now
 	delay(50);  //wait ping to complete
 	sonarA0.Update();  // update sonar
-	
+
 	// show results
 	Serial.print("Ping: ");
 	Serial.println(sonarA0.GetMeasureMM());
@@ -120,7 +128,8 @@ void loop()
 
 ```
 
-* SyncWithCallback: Muestra el uso bloqueante con función de callback
+### SyncWithCallback: Show blocking usage with callback function
+
 ```c++
 #include "AsyncSonarLib.h"
 
@@ -142,7 +151,7 @@ AsyncSonar sonarA0(A0, PingRecieved, TimeOut);
 void setup()
 {
 	Serial.begin(115200);
-	
+
 	sonarA0.SetTemperatureCorrection(28);  // optional
 }
 
@@ -154,7 +163,8 @@ void loop()
 }
 ```
 
-* AsyncSingle: Muestra un ejemplo sencillo de uso asíncrono
+### AsyncSingle: Show a simple example of asynchronous usage
+
 ```c++
 #include "AsyncSonarLib.h"
 
@@ -176,7 +186,7 @@ AsyncSonar sonarA0(A0, PingRecieved, TimeOut);
 void setup()
 {
 	Serial.begin(115200);
-	
+
 	sonarA0.SetTemperatureCorrection(28);  // optional
 	sonarA0.Start(1500);	// start in 1500ms
 }
@@ -188,7 +198,8 @@ void loop()
 }
 ```
 
-* AsyncContinuous: Muestra el uso asíncrono continuo con reactivacion en el callback
+### AsyncContinuous: Displays continuous asynchronous usage with callback reactivation
+
 ```c++
 #include "AsyncSonarLib.h"
 
@@ -221,7 +232,8 @@ void loop()
 }
 ```
 
-* AsyncChain: Muestra el uso asíncrono continuo usando el propio AsyncSonar como parámetro en Update
+### AsyncChain: Displays continuous asynchronous usage using AsyncSonar itself as parameter in Update
+
 ```c++
 #include "AsyncSonarLib.h"
 
@@ -240,7 +252,7 @@ void TimeOut(AsyncSonar& sonar)
 
 AsyncSonar sonarA0(A0, PingRecieved, TimeOut);
 
-// ---- In this demo, this code simulates other project tasks
+// --- ## In this demo, this code simulates other project tasks
 unsigned long interval = 1000;
 unsigned long previousMillis;
 
@@ -278,7 +290,8 @@ void loop()
 }
 ```
 
-* AsyncChainMedian: Muestra el uso asíncrono utilizando el filtro de mediana
+### AsyncChainMedian: Displays asynchronous usage using the median filter.
+
 ```c++
 #include "AsyncSonarLib.h"
 
@@ -306,7 +319,8 @@ void loop()
 }
 ```
 
-* AsyncChainMultiple: Muestra la medición contínua asíncrona con múltiples sensores
+### AsyncChainMultiple: Displays asynchronous continuous measurement with multiple sensors
+
 ```c++
 #include "AsyncSonarLib.h"
 
@@ -356,7 +370,8 @@ void loop()
 }
 ```
 
-* AsyncISR: Muestra el uso con ejecución de la callback en la ISR
+### AsyncISR: Muestra el uso con ejecución de la callback en la ISR- AsyncISR: Shows the use with callback execution in the ISR
+
 ```c++
 // Uncomment ASYNCSONAR_USE_SONAR ISR in config.harderr
 #include "AsyncSonarLib.h"
@@ -386,7 +401,7 @@ AsyncSonar sonarA0(A0, PingRecieved, TimeOut, SonarISR);
 void setup()
 {
 	Serial.begin(115200);
-	
+
 	sonarA0.SetTemperatureCorrection(28);  // optional
 	sonarA0.Start(500); // start in 500ms
 }
@@ -395,7 +410,7 @@ void loop()
 {
 	// this is where magic begins
 	sonarA0.Update();
-	
+
 	delay(100);
 }
 ```
