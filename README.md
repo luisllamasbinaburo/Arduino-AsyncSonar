@@ -10,7 +10,7 @@ AsyncSonar objects can be chained, so that several ultrasound sensors are trigge
 
 More information https://www.luisllamas.es/libreria-arduino-asyncsonar/
 
-## Requisitos
+## Dependencies
 
 The AsyncSonar library uses the YetAnotherPcInt library developed by Paulo Costa, available on Github https://github.com/paulo-raca/YetAnotherArduinoPcIntLibrary/ and in the Arduino library manager. This library facilitates the use of Pin Change interrupts.
 
