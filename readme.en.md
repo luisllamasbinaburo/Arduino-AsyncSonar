@@ -1,3 +1,5 @@
+[Spanish version here](https://github.com/luisllamasbinaburo/Arduino-AsyncSonar/blob/master/readme.md)
+
 # Arduino AsyncSonar Library
 
 The AsyncSonar library allows to control an ultrasonic sensor such as the HC-SR04 in an "asynchronous" (non-blocking) way, i.e. it allows the main loop to perform additional actions while waiting for the Echo to be received.
