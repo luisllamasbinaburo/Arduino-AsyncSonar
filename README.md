@@ -1,3 +1,5 @@
+[English version here](https://github.com/luisllamasbinaburo/Arduino-AsyncSonar/readme.en.md)
+
 # Librería Arduino AsyncSonar
 La librería AsyncSonar permite controlar un sensor de ultrasonidos como el HC-SR04 de forma "asíncrona" (no bloqueante), es decir, permite que el bucle principal realice acciones adicionales mientras está esperando que se reciba el Echo.
 
