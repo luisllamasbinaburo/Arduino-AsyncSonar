@@ -6,34 +6,37 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  ****************************************************/
- 
-#include "AsyncSonarLib.h"
+
+// Blocking use, but results are delivered through callbacks.
+// Wiring: HC-SR04 Trig + Echo -> A0 (one pin mode)
+
+#include <AsyncSonarLib.h>
 
 // ping complete callback
-void PingRecieved(AsyncSonar& sonar)
+void PingReceived(AsyncSonar& sonar)
 {
 	Serial.print("Ping: ");
-	Serial.println(sonar.GetMeasureMM());
+	Serial.print(sonar.GetMeasureMM());
+	Serial.println(" mm");
 }
 
 // timeout callback
-void TimeOut(AsyncSonar& sonar)
+void TimeOut(AsyncSonar& /*sonar*/)
 {
 	Serial.println("TimeOut");
 }
 
-AsyncSonar sonarA0(A0, PingRecieved, TimeOut);
+AsyncSonar sonarA0(A0, PingReceived, TimeOut);
 
 void setup()
 {
 	Serial.begin(115200);
-	
 	sonarA0.SetTemperatureCorrection(28);  // optional
 }
 
 void loop()
 {
-	sonarA0.Start();  // start now
-	delay(50);  //wait ping to complete
-	sonarA0.Update();  // update sonar
+	sonarA0.Start();   // start now
+	delay(50);         // wait for the ping to complete
+	sonarA0.Update();  // update sonar -> fires the callback
 }

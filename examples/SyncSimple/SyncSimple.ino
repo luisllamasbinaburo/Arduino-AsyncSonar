@@ -6,24 +6,28 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  ****************************************************/
- 
-#include "AsyncSonarLib.h"
+
+// Blocking use: start a measure, wait for it and read the result.
+// Wiring: HC-SR04 Trig + Echo -> A0 (one pin mode)
+
+#include <AsyncSonarLib.h>
 
 AsyncSonar sonarA0(A0);
 
-void setup() 
+void setup()
 {
 	Serial.begin(115200);
-	sonarA0.SetTemperatureCorrection(28);  // optional
+	sonarA0.SetTemperatureCorrection(28);  // optional, ambient temperature in Celsius
 }
 
 void loop()
 {
-	sonarA0.Start();  // start now
-	delay(50);  //wait ping to complete
+	sonarA0.Start();   // start now
+	delay(50);         // wait for the ping to complete
 	sonarA0.Update();  // update sonar
-	
+
 	// show results
 	Serial.print("Ping: ");
-	Serial.println(sonarA0.GetMeasureMM());
+	Serial.print(sonarA0.GetMeasureMM());
+	Serial.println(" mm");
 }
