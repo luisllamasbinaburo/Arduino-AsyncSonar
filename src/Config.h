@@ -9,8 +9,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 #pragma once
 
-// enable ISR on ping complete. (makes ISR slower)
-//#define ASYNCSONAR_USE_SONARISR
-
-// disable median filter (makes library smaller)
+// Disable the 5 samples median filter.
+// Saves 22 bytes of RAM per sensor (GetFilteredMM / GetFilteredUS are removed).
 //#define ASYNCSONAR_DISABLE_MEDIAN
+
+// NOTE: ASYNCSONAR_USE_SONARISR is no longer needed (since v1.1.0).
+// The ISR callback is always available as the 4th constructor argument.

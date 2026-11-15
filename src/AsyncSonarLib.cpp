@@ -14,32 +14,33 @@ void AsyncSonar::Start()
 	delayedStart(millis(), 0);
 }
 
-void AsyncSonar::Start(unsigned long startDelay)
+void AsyncSonar::Start(unsigned long startDelayMillis)
 {
-	delayedStart(millis(), startDelay);
+	delayedStart(millis(), startDelayMillis);
 }
 
 void AsyncSonar::Stop()
 {
-	PcInt::detachInterrupt(TriggerPin);
+	PcInt::detachInterrupt(EchoPin);
 	_status = IDLE;
 }
 
+// ISR: echo pulse starts
 void AsyncSonar::responseStart(AsyncSonar *item)
 {
-	PcInt::detachInterrupt(item->TriggerPin);
 	item->_responseStartMicros = micros();
-	PcInt::attachInterrupt(item->TriggerPin, responseEnd, item, FALLING);
+	PcInt::detachInterrupt(item->EchoPin);
+	PcInt::attachInterrupt(item->EchoPin, responseEnd, item, FALLING);
 }
 
+// ISR: echo pulse ends
 void AsyncSonar::responseEnd(AsyncSonar *item)
 {
-	PcInt::detachInterrupt(item->TriggerPin);
-	item->_responseEndMicros = micros();
+	unsigned long endMicros = micros();
+	PcInt::detachInterrupt(item->EchoPin);
+	item->_lastRaw = endMicros - item->_responseStartMicros;
 	item->_status = FINISHED;
-#ifdef ASYNCSONAR_USE_SONARISR
-	if(item->SonarISR !=nullptr) item->SonarISR(*item);
-#endif
+	if (item->SonarISR != nullptr) item->SonarISR(*item);
 }
 
 void AsyncSonar::Update()
@@ -53,13 +54,19 @@ void AsyncSonar::Update(AsyncSonar *nextAsyncSonar)
 
 	if (_status == STARTING && static_cast<unsigned long>(millis() - _startTime) >= _startDelay)
 		ping();
-	
+
 	if (_status == WAITING_RESPONSE && static_cast<unsigned long>(millis() - _startTime) >= _timeoutInterval)
 	{
-		timeOut();
-		trigger(nextAsyncSonar);
+		// stop listening first, so the ISR can not finish the measure while we handle the timeout
+		PcInt::detachInterrupt(EchoPin);
+		if (_status != FINISHED)
+		{
+			timeOut();
+			trigger(nextAsyncSonar);
+			return;
+		}
 	}
-	
+
 	if (_status == FINISHED)
 	{
 		finishMeasure();
@@ -69,20 +76,25 @@ void AsyncSonar::Update(AsyncSonar *nextAsyncSonar)
 
 void AsyncSonar::timeOut()
 {
-	Stop(); 
-	_lastRaw = _timeoutInterval * 1000;
+	Stop();
+	_lastRaw = _timeoutInterval * 1000UL;
 	if (OnTimeOut != nullptr) OnTimeOut(*this);
 }
 
 void AsyncSonar::finishMeasure()
 {
 	Stop();
-	_lastRaw = _responseEndMicros - _responseStartMicros;
 	if (_lastRaw > 0)
 	{
 		_lastMeasure = _lastRaw;
-		
+
 #ifndef ASYNCSONAR_DISABLE_MEDIAN
+		if (!_filterPrimed)
+		{
+			// fill the window with the first value, so the median is meaningful from the start
+			for (uint8_t i = 0; i < 5; i++) _filtered[i] = _lastMeasure;
+			_filterPrimed = true;
+		}
 		_filtered[_filterIndex] = _lastMeasure;
 		_filterIndex = (_filterIndex + 1) % 5;
 #endif
@@ -98,40 +110,51 @@ void AsyncSonar::trigger(AsyncSonar* nextAsyncSonar) const
 	}
 }
 
-void AsyncSonar::delayedStart(unsigned long startTime, unsigned long starDelay)
+void AsyncSonar::delayedStart(unsigned long startTime, unsigned long startDelay)
 {
 	_status = STARTING;
 	_startTime = startTime;
-	_startDelay = starDelay;
+	_startDelay = startDelay;
 
 	if (static_cast<unsigned long>(millis() - _startTime) >= _startDelay) ping();
 }
 
 void AsyncSonar::ping()
 {
-	PcInt::detachInterrupt(TriggerPin);
-	
+	PcInt::detachInterrupt(EchoPin);
+
 	pinMode(TriggerPin, OUTPUT);
 	digitalWrite(TriggerPin, LOW);
 	delayMicroseconds(4);
 	digitalWrite(TriggerPin, HIGH);
 	delayMicroseconds(10);
 	digitalWrite(TriggerPin, LOW);
-	pinMode(TriggerPin, INPUT);
+	pinMode(EchoPin, INPUT);  // in one pin mode, this releases the line for the echo
 	delayMicroseconds(4);
+
 	_status = WAITING_RESPONSE;
 	_startTime = millis();
-	PcInt::attachInterrupt(TriggerPin, responseStart, this, RISING);
+	PcInt::attachInterrupt(EchoPin, responseStart, this, RISING);
+}
+
+unsigned int AsyncSonar::usToMM(unsigned long us) const
+{
+	return us * 100UL / _soundSpeedFactor;
 }
 
 unsigned long AsyncSonar::GetRawUS() const
 {
-	return _responseEndMicros - _responseStartMicros;;
+	// 32 bit variable written from the ISR: read it atomically (safe to call from SonarISR too)
+	uint8_t oldSREG = SREG;
+	cli();
+	unsigned long raw = _lastRaw;
+	SREG = oldSREG;
+	return raw;
 }
 
 unsigned int AsyncSonar::GetRawMM() const
 {
-	return GetRawUS() * 100 / _soundSpeedFactor;
+	return usToMM(GetRawUS());
 }
 
 unsigned long AsyncSonar::GetMeasureUS() const
@@ -141,18 +164,19 @@ unsigned long AsyncSonar::GetMeasureUS() const
 
 unsigned int AsyncSonar::GetMeasureMM() const
 {
-	return GetMeasureUS() * 100 / _soundSpeedFactor;
+	return usToMM(GetMeasureUS());
 }
-
 
 void AsyncSonar::SetTemperatureCorrection(int8_t tempCelsius)
 {
-	_soundSpeedFactor = 2000000 / (3310 + 6 * tempCelsius);
+	// speed of sound (m/s) = 331 + 0.6 * T
+	_soundSpeedFactor = 2000000L / (3310L + 6L * tempCelsius);
 }
 
 void AsyncSonar::SetTimeOutDistance(unsigned int distanceMM)
 {
-	_timeoutInterval = distanceMM * 2 * _soundSpeedFactor / 100000;
+	// round-trip time for distanceMM, rounded up, plus 1 ms margin for millis() resolution
+	_timeoutInterval = (static_cast<unsigned long>(distanceMM) * _soundSpeedFactor + 99999UL) / 100000UL + 1;
 }
 
 void AsyncSonar::SetTimeOut(unsigned int timeOutMillis)
@@ -168,13 +192,13 @@ void AsyncSonar::SetTriggerInterval(unsigned int intervalMillis)
 #ifndef ASYNCSONAR_DISABLE_MEDIAN
 unsigned long AsyncSonar::GetFilteredUS() const
 {
-	unsigned long median = GetMedian(_filtered[0], _filtered[1], _filtered[2], _filtered[3], _filtered[4]);
-	return median == 0 ? GetMeasureUS() : median;
+	if (!_filterPrimed) return GetMeasureUS();
+	return GetMedian(_filtered[0], _filtered[1], _filtered[2], _filtered[3], _filtered[4]);
 }
 
 unsigned int AsyncSonar::GetFilteredMM() const
 {
-	return GetFilteredUS() * 100 / _soundSpeedFactor;
+	return usToMM(GetFilteredUS());
 }
 
 unsigned long AsyncSonar::GetMedian(unsigned long a, unsigned long b, unsigned long c, unsigned long d, unsigned long e)

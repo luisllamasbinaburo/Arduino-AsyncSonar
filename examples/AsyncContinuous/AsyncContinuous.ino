@@ -6,16 +6,21 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
  ****************************************************/
- 
-#include "AsyncSonarLib.h"
 
-AsyncSonar sonarA0(A0, [](AsyncSonar& sonar) { Serial.println(sonar.GetMeasureMM()); Sonar.Start();});
+// Non blocking continuous measures, restarting the sensor from the callbacks.
+// Wiring: HC-SR04 Trig + Echo -> A0 (one pin mode)
+
+#include <AsyncSonarLib.h>
+
+AsyncSonar sonarA0(A0,
+	[](AsyncSonar& sonar) { Serial.println(sonar.GetMeasureMM()); sonar.Start(50); },  // on ping
+	[](AsyncSonar& sonar) { Serial.println("TimeOut"); sonar.Start(50); });            // on timeout
 
 void setup()
 {
 	Serial.begin(115200);
 
-	sonarA0.Start(1500);	// start in 1500ms
+	sonarA0.Start(1500);  // start in 1500ms
 }
 
 void loop()

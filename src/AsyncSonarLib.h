@@ -7,11 +7,11 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License
 ****************************************************/
 
-#ifndef _ASYNCSONARLIB_h
-#define _ASYNCSONARLIB_h
+#ifndef ASYNCSONARLIB_H
+#define ASYNCSONARLIB_H
 
 #if defined(ARDUINO) && ARDUINO >= 100
-#include "Arduino.h"
+	#include "Arduino.h"
 #else
 	#include "WProgram.h"
 #endif
@@ -19,7 +19,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #include <YetAnotherPcInt.h>
 #include "Config.h"
 
-enum AsyncSonarStatus
+// uint8_t underlying type: reads/writes are atomic on AVR (shared with the ISR)
+enum AsyncSonarStatus : uint8_t
 {
 	STARTING,
 	WAITING_RESPONSE,
@@ -33,32 +34,33 @@ public:
 	typedef void (*SonarCallback)(AsyncSonar&);
 
 	uint8_t TriggerPin;
+	uint8_t EchoPin;
 	SonarCallback OnPing = nullptr;
 	SonarCallback OnTimeOut = nullptr;
+	SonarCallback SonarISR = nullptr;  // called from the interrupt when the echo ends
 
-#ifndef ASYNCSONAR_USE_SONARISR
-	AsyncSonar(uint8_t trigger_pin,
-		void(*on_ping)(AsyncSonar&) = nullptr,
-		void(*on_time_out)(AsyncSonar&) = nullptr)
-		: TriggerPin(trigger_pin), OnPing(on_ping), OnTimeOut(on_time_out) {}
+	// One pin mode: Trig and Echo connected to the same Arduino pin
+	AsyncSonar(uint8_t pin,
+		SonarCallback on_ping = nullptr,
+		SonarCallback on_time_out = nullptr,
+		SonarCallback isr = nullptr)
+		: TriggerPin(pin), EchoPin(pin), OnPing(on_ping), OnTimeOut(on_time_out), SonarISR(isr) {}
 
-
-#else
-	SonarCallback SonarISR = nullptr;
-
-	AsyncSonar(uint8_t trigger_pin,
-					   void (*on_ping)(AsyncSonar&) = nullptr,
-					   void (*on_time_out)(AsyncSonar&) = nullptr,
-					   void (*isr)(AsyncSonar&) = nullptr)
-		: TriggerPin(trigger_pin), OnPing(on_ping), OnTimeOut(on_time_out), SonarISR(isr) {}
-#endif
+	// Two pins mode: Trig and Echo on different pins (Echo must support Pin Change Interrupts)
+	AsyncSonar(uint8_t trigger_pin, uint8_t echo_pin,
+		SonarCallback on_ping = nullptr,
+		SonarCallback on_time_out = nullptr,
+		SonarCallback isr = nullptr)
+		: TriggerPin(trigger_pin), EchoPin(echo_pin), OnPing(on_ping), OnTimeOut(on_time_out), SonarISR(isr) {}
 
 	void Start();
-	void Start(unsigned long);
+	void Start(unsigned long startDelayMillis);
 	void Stop();
 
 	void Update();
-	void Update(AsyncSonar*);
+	void Update(AsyncSonar* nextAsyncSonar);
+
+	AsyncSonarStatus GetStatus() const { return _status; }
 
 	unsigned int GetRawMM() const;
 	unsigned long GetRawUS() const;
@@ -73,7 +75,7 @@ public:
 	void SetTemperatureCorrection(int8_t tempCelsius);
 	void SetTimeOutDistance(unsigned int distanceMM);
 	void SetTimeOut(unsigned int timeOutMillis);
-	void SetTriggerInterval(unsigned int timeOutMillis);
+	void SetTriggerInterval(unsigned int intervalMillis);
 
 private:
 	void ping();
@@ -82,29 +84,28 @@ private:
 	void timeOut();
 	void finishMeasure();
 	void trigger(AsyncSonar* nextAsyncSonar) const;
-	void delayedStart(unsigned long, unsigned long);
+	void delayedStart(unsigned long startTime, unsigned long startDelay);
+	unsigned int usToMM(unsigned long us) const;
 
 	volatile AsyncSonarStatus _status = IDLE;
 
-	unsigned long _startTime;
-	unsigned long _startDelay;
-	volatile unsigned long _responseStartMicros;
-	volatile unsigned long _responseEndMicros;
+	unsigned long _startTime = 0;
+	unsigned long _startDelay = 0;
+	volatile unsigned long _responseStartMicros = 0;
+	volatile unsigned long _lastRaw = 0;
+	unsigned long _lastMeasure = 0;
 
-	volatile unsigned long _lastRaw;
-	volatile unsigned long _lastMeasure;
-	volatile unsigned long _filtered[5];
-	uint8_t _filterIndex = 0;
-
-	unsigned long _soundSpeedFactor = 583;
-	unsigned long _timeoutInterval = 25;
-	unsigned long _triggerInterval = 35;
+	unsigned long _soundSpeedFactor = 583;  // 100 * round-trip microseconds per mm (20 C)
+	unsigned long _timeoutInterval = 25;    // ms (~4.3 m)
+	unsigned long _triggerInterval = 35;    // ms
 
 #ifndef ASYNCSONAR_DISABLE_MEDIAN
+	unsigned long _filtered[5] = { 0, 0, 0, 0, 0 };
+	uint8_t _filterIndex = 0;
+	bool _filterPrimed = false;
+
 	static unsigned long GetMedian(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
 #endif
 };
 
-
 #endif
-

@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="492" viewBox="0 0 1000 492">
+<rect width="1000" height="492" rx="14" fill="#ffffff"/>
+<text x="28" y="42" font-size="22" fill="#111827" text-anchor="start" font-weight="bold" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >Why non-blocking?</text>
+<text x="28" y="66" font-size="13" fill="#4b5563" text-anchor="start" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >Same sensor, object at 2 m (echo ≈ 12 ms), one ping every 35 ms</text>
+<rect x="20" y="90" width="960" height="168" rx="10" fill="#fef2f2" stroke="#e5e7eb"/>
+<text x="36" y="112" font-size="15" fill="#111827" text-anchor="start" font-weight="bold" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >Blocking — pulseIn()</text>
+<text x="176" y="152" font-size="12" fill="#6b7280" text-anchor="end" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >loop()</text>
+<rect x="191.0" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="205.6" y="140" width="95.9" height="22" rx="3" fill="#ef4444"/>
+<text x="253.57" y="155" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >stuck waiting</text>
+<rect x="302.5" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="318.1" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="333.7" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="349.3" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="364.9" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="380.5" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="396.1" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="411.7" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="427.3" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="442.9" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="458.5" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="474.1" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="488.7" y="140" width="85.8" height="22" rx="3" fill="#ef4444"/>
+<text x="531.64" y="155" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >stuck waiting</text>
+<rect x="575.5" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="591.1" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="606.7" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="622.3" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="637.9" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="653.5" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="669.1" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="684.7" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="700.3" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="715.9" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="731.5" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="747.1" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="761.7" y="140" width="85.8" height="22" rx="3" fill="#ef4444"/>
+<text x="804.6400000000001" y="155" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >stuck waiting</text>
+<rect x="848.5" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="864.1" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="879.7" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="895.3" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="910.9" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="926.5" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="942.1" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="957.7" y="140" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<text x="176" y="189" font-size="12" fill="#6b7280" text-anchor="end" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >Echo pin</text>
+<polyline points="190.0,194.0 209.5,194.0 209.5,180.0 300.8,180.0 300.8,194.0 482.5,194.0 482.5,180.0 573.8,180.0 573.8,194.0 755.5,194.0 755.5,180.0 846.8,180.0 846.8,194.0 970.0,194.0" fill="none" stroke="#6366f1" stroke-width="2.5"/>
+<text x="190" y="238" font-size="12.5" fill="#b91c1c" text-anchor="start" font-weight="bold" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >≈ 35% of the time your sketch can not read buttons, update displays or move motors</text>
+<rect x="20" y="290" width="960" height="168" rx="10" fill="#f0fdf4" stroke="#e5e7eb"/>
+<text x="36" y="312" font-size="15" fill="#111827" text-anchor="start" font-weight="bold" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >Non-blocking — AsyncSonar</text>
+<text x="176" y="352" font-size="12" fill="#6b7280" text-anchor="end" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >loop()</text>
+<rect x="191.0" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="206.6" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="222.2" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="237.8" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="253.4" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="269.0" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="284.6" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="300.2" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="315.8" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="331.4" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="347.0" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="362.6" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="378.2" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="393.8" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="409.4" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="425.0" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="440.6" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="456.2" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="471.8" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="487.4" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="503.0" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="518.6" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="534.2" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="549.8" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="565.4" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="581.0" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="596.6" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="612.2" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="627.8" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="643.4" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="659.0" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="674.6" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="690.2" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="705.8" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="721.4" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="737.0" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="752.6" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="768.2" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="783.8" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="799.4" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="815.0" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="830.6" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="846.2" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="861.8" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="877.4" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="893.0" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="908.6" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="924.2" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="939.8" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<rect x="955.4" y="340" width="13.6" height="22" rx="2" fill="#22c55e"/>
+<text x="176" y="389" font-size="12" fill="#6b7280" text-anchor="end" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >Echo pin</text>
+<polyline points="190.0,394.0 209.5,394.0 209.5,380.0 300.8,380.0 300.8,394.0 482.5,394.0 482.5,380.0 573.8,380.0 573.8,394.0 755.5,394.0 755.5,380.0 846.8,380.0 846.8,394.0 970.0,394.0" fill="none" stroke="#6366f1" stroke-width="2.5"/>
+<path d="M 209.5 374 l -5 -8 h 10 z" fill="#f59e0b"/>
+<path d="M 300.8 374 l -5 -8 h 10 z" fill="#f59e0b"/>
+<circle cx="308.6" cy="351" r="7" fill="#0ea5e9" stroke="#ffffff" stroke-width="2"/>
+<path d="M 482.5 374 l -5 -8 h 10 z" fill="#f59e0b"/>
+<path d="M 573.8 374 l -5 -8 h 10 z" fill="#f59e0b"/>
+<circle cx="581.6" cy="351" r="7" fill="#0ea5e9" stroke="#ffffff" stroke-width="2"/>
+<path d="M 755.5 374 l -5 -8 h 10 z" fill="#f59e0b"/>
+<path d="M 846.8 374 l -5 -8 h 10 z" fill="#f59e0b"/>
+<circle cx="854.6" cy="351" r="7" fill="#0ea5e9" stroke="#ffffff" stroke-width="2"/>
+<text x="190" y="438" font-size="12.5" fill="#15803d" text-anchor="start" font-weight="bold" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >loop() never stops</text>
+<path d="M 340 434 l -5 -8 h 10 z" fill="#f59e0b"/>
+<text x="350" y="438" font-size="12" fill="#374151" text-anchor="start" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >interrupt timestamps the echo</text>
+<circle cx="550" cy="434" r="6" fill="#0ea5e9"/>
+<text x="560" y="438" font-size="12" fill="#374151" text-anchor="start" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >OnPing callback runs in Update()</text>
+<text x="190.0" y="478" font-size="10" fill="#9ca3af" text-anchor="middle" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >0 ms</text>
+<text x="268.0" y="478" font-size="10" fill="#9ca3af" text-anchor="middle" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >10 ms</text>
+<text x="346.0" y="478" font-size="10" fill="#9ca3af" text-anchor="middle" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >20 ms</text>
+<text x="424.0" y="478" font-size="10" fill="#9ca3af" text-anchor="middle" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >30 ms</text>
+<text x="502.0" y="478" font-size="10" fill="#9ca3af" text-anchor="middle" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >40 ms</text>
+<text x="580.0" y="478" font-size="10" fill="#9ca3af" text-anchor="middle" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >50 ms</text>
+<text x="658.0" y="478" font-size="10" fill="#9ca3af" text-anchor="middle" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >60 ms</text>
+<text x="736.0" y="478" font-size="10" fill="#9ca3af" text-anchor="middle" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >70 ms</text>
+<text x="814.0" y="478" font-size="10" fill="#9ca3af" text-anchor="middle" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >80 ms</text>
+<text x="892.0" y="478" font-size="10" fill="#9ca3af" text-anchor="middle" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >90 ms</text>
+<text x="970.0" y="478" font-size="10" fill="#9ca3af" text-anchor="middle" font-weight="normal" font-family="'Segoe UI', Helvetica, Arial, sans-serif" >100 ms</text>
+</svg>

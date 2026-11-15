@@ -1,0 +1,38 @@
+name: Compile examples
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        fqbn:
+          - arduino:avr:uno
+          - arduino:avr:nano
+          - arduino:avr:mega
+          - arduino:avr:leonardo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arduino/compile-sketches@v1
+        with:
+          fqbn: ${{ matrix.fqbn }}
+          enable-warnings-report: true
+          libraries: |
+            - source-path: ./
+            - name: Yet Another Arduino PcInt Library
+          sketch-paths: |
+            - examples
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arduino/arduino-lint-action@v1
+        with:
+          library-manager: update
+          compliance: strict
